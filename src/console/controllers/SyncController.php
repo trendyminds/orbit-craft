@@ -38,7 +38,7 @@ class SyncController extends Controller
                 'url' => UrlHelper::siteUrl(),
                 'yii_version' => Craft::getVersion(),
                 'craft_version' => Craft::$app->getVersion().' '.App::editionName(Craft::$app->getEdition()),
-                'php_version' => phpversion(),
+                'php_version' => App::phpVersion(),
                 'composer_version' => 'N/A',
                 'dev_mode' => App::devMode(),
                 'offline_mode' => ! Craft::$app->getIsLive(),
