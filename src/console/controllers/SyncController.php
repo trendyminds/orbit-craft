@@ -47,7 +47,8 @@ class SyncController extends Controller
             'drivers' => [],
             'addons' => collect($addons)->map(function ($addon) use ($updates) {
                 return [
-                    'name' => $addon->packageName,
+                    'name' => $addon->name,
+                    'package' => $addon->packageName,
                     'version' => $addon->version,
                     'latest_version' => $updates->firstWhere('name', $addon->packageName)['latest_version'] ?? null,
                 ];
