@@ -36,6 +36,7 @@ class SyncController extends Controller
                 'environment' => App::env('CRAFT_ENVIRONMENT') ?? App::env('ENVIRONMENT'),
                 'app_name' => Craft::$app->getSystemName(),
                 'url' => UrlHelper::siteUrl(),
+                'admin_url' => UrlHelper::cpUrl(),
                 'yii_version' => Craft::getVersion(),
                 'craft_version' => Craft::$app->getVersion().' '.App::editionName(Craft::$app->getEdition()),
                 'php_version' => App::phpVersion(),
