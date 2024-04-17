@@ -53,7 +53,13 @@ class SyncController extends Controller
                     'version' => $addon->version,
                     'latest_version' => $updates->firstWhere('name', $addon->packageName)['latest_version'] ?? null,
                 ];
-            })->sortBy('name')->values()->toArray(),
+            })->sortBy('name')
+			->prepend([
+				'name' => "Craft CMS",
+				'package' => "craftcms/cms",
+				'version' => Craft::$app->getVersion(),
+				'latest_version' => $allUpdates->cms->releases[0]->version ?? null,
+			])->values()->toArray(),
         ];
 
         try {
