@@ -26,14 +26,15 @@ class SyncController extends Controller
             ]);
 
         $info = [
-            'orbit_version' => '1.0.0',
+            'orbit_version' => '0.1.0',
             'type' => 'craftcms',
             'has_cms_update' => count($allUpdates->cms->releases) > 0,
             'has_addons_update' => $updates
                 ->filter(fn ($addon) => ! is_null($addon['latest_version']))
+                ->filter(fn ($addon) => $addon['name'] !== 'craftcms/cms')
                 ->isNotEmpty(),
             'app' => [
-                'environment' => App::env('CRAFT_ENVIRONMENT') ?? App::env('ENVIRONMENT'),
+                'environment' => App::env('CRAFT_ENVIRONMENT') ?: App::env('ENVIRONMENT'),
                 'app_name' => Craft::$app->getSystemName(),
                 'url' => UrlHelper::siteUrl(),
                 'admin_url' => UrlHelper::cpUrl(),
@@ -41,7 +42,7 @@ class SyncController extends Controller
                 'craft_version' => Craft::$app->getVersion().' '.App::editionName(Craft::$app->getEdition()),
                 'php_version' => App::phpVersion(),
                 'composer_version' => 'N/A',
-                'dev_mode' => App::devMode(),
+                'dev_mode' => Craft::$app->getConfig()->getGeneral()->devMode,
                 'offline_mode' => ! Craft::$app->getIsLive(),
                 'ray_enabled' => App::env('RAY_ENABLED'),
             ],
