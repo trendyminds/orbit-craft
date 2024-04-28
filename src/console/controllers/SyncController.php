@@ -31,6 +31,7 @@ class SyncController extends Controller
             'has_cms_update' => count($allUpdates->cms->releases) > 0,
             'has_addons_update' => $updates
                 ->filter(fn ($addon) => ! is_null($addon['latest_version']))
+                ->filter(fn ($addon) => $addon['name'] !== 'craftcms/cms')
                 ->isNotEmpty(),
             'app' => [
                 'environment' => App::env('CRAFT_ENVIRONMENT') ?? App::env('ENVIRONMENT'),
