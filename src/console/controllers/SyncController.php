@@ -44,7 +44,7 @@ class SyncController extends Controller
                 'composer_version' => 'N/A',
                 'dev_mode' => App::devMode(),
                 'offline_mode' => ! Craft::$app->getIsLive(),
-                'ray_enabled' => App::env('RAY_ENABLED'),
+                'ray_enabled' => App::parseBooleanEnv('$RAY_ENABLED'),
             ],
             'drivers' => [],
             'addons' => collect($addons)->map(function ($addon) use ($updates) {
