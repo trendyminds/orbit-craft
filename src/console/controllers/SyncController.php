@@ -25,28 +25,20 @@ class SyncController extends Controller
                 'latest_version' => collect($addon->releases)->first()['version'] ?? null,
             ]);
 
-        $info = [
-            'orbit_version' => '0.1.0',
-            'type' => 'craftcms',
-            'has_cms_update' => count($allUpdates->cms->releases) > 0,
-            'has_addons_update' => $updates
-                ->filter(fn ($addon) => ! is_null($addon['latest_version']))
-                ->filter(fn ($addon) => $addon['name'] !== 'craftcms/cms')
-                ->isNotEmpty(),
-            'app' => [
-                'environment' => App::env('CRAFT_ENVIRONMENT') ?: App::env('ENVIRONMENT'),
-                'app_name' => Craft::$app->getSystemName(),
-                'url' => UrlHelper::siteUrl(),
-                'admin_url' => UrlHelper::cpUrl(),
-                'yii_version' => Craft::getVersion(),
-                'craft_version' => Craft::$app->getVersion().' '.App::editionName(Craft::$app->getEdition()),
-                'php_version' => App::phpVersion(),
-                'composer_version' => 'N/A',
-                'dev_mode' => Craft::$app->getConfig()->getGeneral()->devMode,
-                'offline_mode' => ! Craft::$app->getIsLive(),
-                'ray_enabled' => App::parseBooleanEnv('$RAY_ENABLED'),
-            ],
-            'drivers' => [],
+        $data = [
+            'url' => UrlHelper::siteUrl(),
+            'admin_url' => UrlHelper::cpUrl(),
+            'php_version' => App::phpVersion(),
+            'composer_version' => 'N/A',
+            'debug_mode' => Craft::$app->getConfig()->getGeneral()->devMode,
+            'maintenance_mode' => ! Craft::$app->getIsLive(),
+            'ray_enabled' => App::parseBooleanEnv('$RAY_ENABLED'),
+            'platform' => 'Yii',
+            'platform_version' => Craft::getVersion(),
+            'cms' => 'Craft CMS',
+            'cms_version' => Craft::$app->getVersion().' '.App::editionName(Craft::$app->getEdition()),
+            'static_caching' => null,
+            'stache_watcher' => null,
             'addons' => collect($addons)->map(function ($addon) use ($updates) {
                 return [
                     'name' => $addon->name,
@@ -54,13 +46,16 @@ class SyncController extends Controller
                     'version' => $addon->version,
                     'latest_version' => $updates->firstWhere('name', $addon->packageName)['latest_version'] ?? null,
                 ];
-            })->sortBy('name')
-			->prepend([
-				'name' => "Craft CMS",
-				'package' => "craftcms/cms",
-				'version' => Craft::$app->getVersion(),
-				'latest_version' => $allUpdates->cms->releases[0]->version ?? null,
-			])->values()->toArray(),
+            })
+                ->sortBy('name')
+                ->prepend([
+                    'name' => "Craft CMS",
+                    'package' => "craftcms/cms",
+                    'version' => Craft::$app->getVersion(),
+                    'latest_version' => $allUpdates->cms->releases[0]->version ?? null,
+                ])
+                ->values()
+                ->toArray(),
         ];
 
         try {
@@ -70,7 +65,10 @@ class SyncController extends Controller
             ]);
 
             $client->post('/api/transmit', [
-                'json' => ['key' => App::env('ORBIT_KEY'), 'info' => $info],
+                'json' => [
+                    'key' => App::env('ORBIT_KEY'),
+                    ...$data,
+                ],
             ]);
             $this->stdout('Data sent to Orbit.');
         } catch (\Exception $e) {
