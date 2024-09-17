@@ -32,7 +32,7 @@ class SyncController extends Controller
             'composer_version' => 'N/A',
             'debug_mode' => Craft::$app->getConfig()->getGeneral()->devMode,
             'maintenance_mode' => ! Craft::$app->getIsLive(),
-            'ray_enabled' => App::parseBooleanEnv('$RAY_ENABLED'),
+            'ray_enabled' => (bool) App::parseBooleanEnv('$RAY_ENABLED'),
             'platform' => 'Yii',
             'platform_version' => Craft::getVersion(),
             'cms' => 'Craft CMS',
