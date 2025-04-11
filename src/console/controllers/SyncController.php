@@ -18,6 +18,12 @@ class SyncController extends Controller
     {
         $addons = Craft::$app->getPlugins()->getAllPlugins();
         $allUpdates = Craft::$app->getUpdates()->getUpdates();
+
+		$hasCriticalUpdates = collect($allUpdates)
+			->flatten(1)
+			->filter(fn ($addon) => collect($addon->releases)->pluck('critical')->hasAny(true))
+			->isNotEmpty();
+
         $updates = collect($allUpdates)
             ->flatten(1)
             ->map(fn ($addon) => [
@@ -37,6 +43,7 @@ class SyncController extends Controller
             'platform_version' => Craft::getVersion(),
             'cms' => 'Craft CMS',
             'cms_version' => Craft::$app->getVersion().' '.App::editionName(Craft::$app->getEdition()),
+            'has_critical_updates' => $hasCriticalUpdates,
             'static_caching' => null,
             'stache_watcher' => null,
             'addons' => collect($addons)->map(function ($addon) use ($updates) {
