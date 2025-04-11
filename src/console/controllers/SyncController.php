@@ -19,14 +19,14 @@ class SyncController extends Controller
         $addons = Craft::$app->getPlugins()->getAllPlugins();
         $allUpdates = Craft::$app->getUpdates()->getUpdates();
 
-		$hasCriticalUpdates = collect($allUpdates)
-			->flatten(1)
-			->map(fn ($addon) => $addon->releases ?? null)
-			->flatten(1)
-			->filter()
-			->values()
-			->filter(fn ($release) => $release->critical)
-			->isNotEmpty();
+        $hasCriticalUpdates = collect($allUpdates)
+            ->flatten(1)
+            ->map(fn ($addon) => $addon->releases ?? null)
+            ->flatten(1)
+            ->filter()
+            ->values()
+            ->filter(fn ($release) => $release->critical)
+            ->isNotEmpty();
 
         $updates = collect($allUpdates)
             ->flatten(1)
