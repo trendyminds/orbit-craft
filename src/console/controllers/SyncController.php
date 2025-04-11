@@ -21,7 +21,11 @@ class SyncController extends Controller
 
 		$hasCriticalUpdates = collect($allUpdates)
 			->flatten(1)
-			->filter(fn ($addon) => collect($addon->releases)->pluck('critical')->hasAny(true))
+			->map(fn ($addon) => $addon->releases ?? null)
+			->flatten(1)
+			->filter()
+			->values()
+			->filter(fn ($release) => $release->critical)
 			->isNotEmpty();
 
         $updates = collect($allUpdates)
