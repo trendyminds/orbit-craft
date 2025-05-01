@@ -71,7 +71,7 @@ class SyncController extends Controller
 
         try {
             $client = new Client([
-                'base_uri' => 'https://orbit.trendyminds.com',
+                'base_uri' => 'https://kamaji.trendyminds.com',
                 'headers' => ['Accept' => 'application/json'],
             ]);
 
